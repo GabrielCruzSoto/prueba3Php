@@ -80,7 +80,7 @@ try {
         <div class="col-12"><br></div>
     </div>
     <div class="row">
-        <div class="col-4">
+        <div class="col-12">
             <table class="table">
                 <thead>
                 <tr>
@@ -96,15 +96,14 @@ try {
                     echo "<tr>" .
                         "<th scope='row'>".strval($area->getCode())."</th>" .
                         ("<td>".$area->getNameArea()."</td>" . ("<td>" . ($area->getStatus() == 0 ? "N" : "S") . "</td>")) .
-                        "<td><a class='btn btn-success' href='form-area.php?act=edit&cod=".$area->getCode()."'>editar</td>" .
+                        "<td><a class='btn btn-success' href='form-area.php?act=edit&cod=".$area->getCode()."'>Editar</a>".
+                        "<a class='btn btn-danger' href='form-area.php?act=del&cod=".$area->getCode()."'>Eliminar</a>"."</td>" .
                         "</tr>";
                 }
                 ?>
                 </tbody>
             </table>
         </div>
-        <div class="col-4"></div>
-        <div class="col-4"></div>
     </div>
 </div>
 

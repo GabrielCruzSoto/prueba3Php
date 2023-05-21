@@ -13,3 +13,10 @@ document.getElementById('customFile').addEventListener('change', function() {
     }
     reader.readAsDataURL(file);
 });
+/* 
+document.getElementById('btnEditar').addEventListener('click', function() {
+    let tagInputNombreArea;
+    let tagInputNombreArea;
+    let tagInputNombreArea;
+    let tagInputNombreArea;
+});*/

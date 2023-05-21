@@ -15,6 +15,32 @@ if (!isset($_GET["act"])) {
     header("Location: error.php");
     exit();
 }
+$modalError = ""; 
+if(isset($_POST["nombre_area"])&& isset($_POST["descripcion"])&& isset($_POST["estado"])&& isset($_FILES["fileImg"])){
+    $nombre_archivo= $_FILES["fileImg"]["name"];
+    $area = new Area();
+    $area -> setNameArea($_POST["nombre_area"]);
+    $area -> setDescription($_POST["descripcion"]);
+    $area -> setImg($nombre_archivo);
+    $area -> setStatus($_POST["estado"]);
+    $rutaTemporal = $_FILES['fileImg']['tmp_name'];
+    $rowAfect = saveArea($area);
+    if($rowAfect>=1){
+        $area = getByNombreAreaAndDescripcionAndImagenAndEstado($area);
+        $isSaveFile=!move_uploaded_file($rutaTemporal, "/var/www/html/prueba3/img/" . $nombre_archivo);
+        if($isSaveFile){
+            deleteById($area->getCode());
+            $modalError = '<div class="alert alert-danger" role="alert"><strong>Error</strong> al guardar</div>'; 
+            
+        }else{
+            #header("Location: mantenedor-areas.php");
+            header("Location: form-area.php?act=edit&cod=".strval($area->getCode()));
+            exit();
+        }
+    }
+    
+
+}
 
 $tagInputNombreAreaIni = '<input class="form-control" type="text" name="nombre_area"';
 $tagInputNombreAreaFin = '>';
@@ -29,7 +55,7 @@ $tagImgFin = "</div>";
 $tagImg = "";
 
 
-$tagInputFileIni = '<input type="file" class="custom-file-input" id="customFile"';
+$tagInputFileIni = '<input type="file" class="custom-file-input" id="customFile" name="fileImg"';
 $tagInputFileFin = '>';
 $tagInputFile = '';
 
@@ -53,6 +79,16 @@ $area = null;
 $textAreaEdit='';
 
 switch ($_GET["act"]) {
+    case "del":
+        if (!isset($_GET["cod"])) {
+            error_log("param GET cod undedined");
+            header("Location: error.php");
+            exit();
+        }
+        $cod = intval($_GET["cod"]);
+        deleteById($cod);
+        header("Location: mantenedor-areas.php");
+        exit();
     case "new":
         $tagInputNombreArea = $tagInputNombreAreaIni . $tagInputNombreAreaFin;
         $tagTextAreaDescription = $tagTextAreaDescriptionIni .'>'. $tagTextAreaDescriptionFin;
@@ -175,7 +211,9 @@ switch ($_GET["act"]) {
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-12"><br></div>
+            <div class="col-12">
+                <?php echo $modalError; ?><br>
+            </div>
         </div>
     </div>
     <div class="container">
@@ -189,7 +227,12 @@ switch ($_GET["act"]) {
             <div class="col-12">
                 <div class="container">
                     <form action="" method="post" enctype="multipart/form-data">
-                        <div class="row">
+                    <div class="row">
+                            <div class="col-3"></div>
+                            <div class="col-9">
+                                <input type="text" name="id" hidden>
+                        </div></div>
+                    <div class="row">
                             <div class="col-3"><label>Nombre Área</label></div>
                             <div class="col-9">
                                 <?php echo $tagInputNombreArea; ?></div>
