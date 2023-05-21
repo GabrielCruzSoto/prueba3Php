@@ -1,6 +1,7 @@
 <?php
 session_start();
-require("src/dao/AreaDao.php");
+require("../src/dao/AreaDao.php");
+
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION["user_name"]) && !isset($_SESSION["user_id"])) {
     header("Location: login.php");
@@ -40,9 +41,9 @@ try {
     </div>
     <div class="row">
         <div class="col-6">
-            <a class="btn btn-primary" href="home.php">Home</a>
-            <a class="btn btn-primary" href="areas.php">&Aacutereas</a>
-            <a class="btn btn-primary" href="usuarios.php">Usuarios</a>
+        <a class="btn btn-primary" href="home.php">Home</a>
+                <a class="btn btn-primary" href="mantenedor-areas.php">&Aacutereas</a>
+                <a class="btn btn-primary" href="mantenedor-usuarios.php">Usuarios</a>
         </div>
         <div class="col-3"></div>
         <div class="col-3">
@@ -67,7 +68,7 @@ try {
 <div class="container">
     <div class="row">
         <div class="col-4">
-            <a class="btn btn-secondary" href="form-new-area.php">Nuevo Registro</a>
+            <a class="btn btn-secondary" href="form-area.php?act=new">Nuevo Registro</a>
         </div>
         <div class="col-4"></div>
         <div class="col-4"></div>
@@ -95,7 +96,7 @@ try {
                     echo "<tr>" .
                         "<th scope='row'>".strval($area->getCode())."</th>" .
                         ("<td>".$area->getNameArea()."</td>" . ("<td>" . ($area->getStatus() == 0 ? "N" : "S") . "</td>")) .
-                        "<td><a class='btn btn-success' href='form-area.php?code=".$area->getCode()."'>editar</td>" .
+                        "<td><a class='btn btn-success' href='form-area.php?act=edit&cod=".$area->getCode()."'>editar</td>" .
                         "</tr>";
                 }
                 ?>

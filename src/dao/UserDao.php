@@ -1,9 +1,9 @@
 <?php
     declare(strict_types=1);
-    require('src/config/ConexionDB.php');
-    require('src/model/User.php');
-    require('src/dao/mapper/UserMapper.php');
-    require('src/excepciones/UserException.php');
+    require('../src/config/ConexionDB.php');
+    require('../src/model/User.php');
+    require('../src/dao/mapper/UserMapper.php');
+    require('../src/excepciones/UserException.php');
 
 
     function getUserByName(string $name):User {
