@@ -7,6 +7,7 @@
                 $user = new User();
                 $user->setId($row['id']);
                 $user->setName($row['usuario']);
+                $user->setFullName($row['nombre']);
                 $user->setStatus($row['estado']);
                 $listUsers[] = $user;
             }

@@ -15,31 +15,28 @@ if (!isset($_GET["act"])) {
     header("Location: error.php");
     exit();
 }
-$modalError = ""; 
-if(isset($_POST["nombre_area"])&& isset($_POST["descripcion"])&& isset($_POST["estado"])&& isset($_FILES["fileImg"])){
-    $nombre_archivo= $_FILES["fileImg"]["name"];
+$modalError = "";
+if (isset($_POST["nombre_area"]) && isset($_POST["descripcion"]) && isset($_POST["estado"]) && isset($_FILES["fileImg"])) {
+    $nombre_archivo = $_FILES["fileImg"]["name"];
     $area = new Area();
-    $area -> setNameArea($_POST["nombre_area"]);
-    $area -> setDescription($_POST["descripcion"]);
-    $area -> setImg($nombre_archivo);
-    $area -> setStatus($_POST["estado"]);
+    $area->setNameArea($_POST["nombre_area"]);
+    $area->setDescription($_POST["descripcion"]);
+    $area->setImg($nombre_archivo);
+    $area->setStatus($_POST["estado"]);
     $rutaTemporal = $_FILES['fileImg']['tmp_name'];
     $rowAfect = saveArea($area);
-    if($rowAfect>=1){
+    if ($rowAfect >= 1) {
         $area = getByNombreAreaAndDescripcionAndImagenAndEstado($area);
-        $isSaveFile=!move_uploaded_file($rutaTemporal, "/var/www/html/prueba3/img/" . $nombre_archivo);
-        if($isSaveFile){
+        $isSaveFile = !move_uploaded_file($rutaTemporal, "/var/www/html/prueba3/img/" . $nombre_archivo);
+        if ($isSaveFile) {
             deleteById($area->getCode());
-            $modalError = '<div class="alert alert-danger" role="alert"><strong>Error</strong> al guardar</div>'; 
-            
-        }else{
+            $modalError = '<div class="alert alert-danger" role="alert"><strong>Error</strong> al guardar</div>';
+        } else {
             #header("Location: mantenedor-areas.php");
-            header("Location: form-area.php?act=edit&cod=".strval($area->getCode()));
+            header("Location: form-area.php?act=edit&cod=" . strval($area->getCode()));
             exit();
         }
     }
-    
-
 }
 
 $tagInputNombreAreaIni = '<input class="form-control" type="text" name="nombre_area"';
@@ -59,24 +56,24 @@ $tagInputFileIni = '<input type="file" class="custom-file-input" id="customFile"
 $tagInputFileFin = '>';
 $tagInputFile = '';
 
-$tagInputRadioButtomSiIni='<input name="estado" type="radio" value="1"';
-$tagInputRadioButtomSiFin='>Si</input>';
-$tagInputRadioButtomSi='';
+$tagInputRadioButtomSiIni = '<input name="estado" type="radio" value="1"';
+$tagInputRadioButtomSiFin = '>Si</input>';
+$tagInputRadioButtomSi = '';
 
 
-$tagInputRadioButtomNoIni='<input name="estado" type="radio" value="0"';
-$tagInputRadioButtomNoFin='>No</input>';
-$tagInputRadioButtomNo='';
+$tagInputRadioButtomNoIni = '<input name="estado" type="radio" value="0"';
+$tagInputRadioButtomNoFin = '>No</input>';
+$tagInputRadioButtomNo = '';
 
-$tagButtomGuardarIni='<button class="btn btn-primary"';
-$tagButtomGuardarFin='>Guardar</button>';
-$tagButtomGuardar='';
+$tagButtomGuardarIni = '<button class="btn btn-primary"';
+$tagButtomGuardarFin = '>Guardar</button>';
+$tagButtomGuardar = '';
 
-$tagButtomEditar ='';
+$tagButtomEditar = '';
 
 
 $area = null;
-$textAreaEdit='';
+$textAreaEdit = '';
 
 switch ($_GET["act"]) {
     case "del":
@@ -91,12 +88,12 @@ switch ($_GET["act"]) {
         exit();
     case "new":
         $tagInputNombreArea = $tagInputNombreAreaIni . $tagInputNombreAreaFin;
-        $tagTextAreaDescription = $tagTextAreaDescriptionIni .'>'. $tagTextAreaDescriptionFin;
-        $tagInputFile = $tagInputFileIni.$tagInputFileFin;
-        $tagInputRadioButtomSi= $tagInputRadioButtomSiIni.$tagInputRadioButtomSiFin;
-        $tagInputRadioButtomNo= $tagInputRadioButtomNoIni.$tagInputRadioButtomNoFin;
-        $tagButtomGuardar= $tagButtomGuardarIni.$tagButtomGuardarFin;
-        $tagImg=$tagImgIni.$tagImgFin;
+        $tagTextAreaDescription = $tagTextAreaDescriptionIni . '>' . $tagTextAreaDescriptionFin;
+        $tagInputFile = $tagInputFileIni . $tagInputFileFin;
+        $tagInputRadioButtomSi = $tagInputRadioButtomSiIni . $tagInputRadioButtomSiFin;
+        $tagInputRadioButtomNo = $tagInputRadioButtomNoIni . $tagInputRadioButtomNoFin;
+        $tagButtomGuardar = $tagButtomGuardarIni . $tagButtomGuardarFin;
+        $tagImg = $tagImgIni . $tagImgFin;
         break;
     case "edit":
         if (!isset($_GET["cod"])) {
@@ -114,24 +111,23 @@ switch ($_GET["act"]) {
         }
         $tagInputNombreArea = $tagInputNombreAreaIni . 'value="' . ($area->getNameArea()) . '" disabled' . $tagInputNombreAreaFin;
         $tagTextAreaDescription = $tagTextAreaDescriptionIni . ' disabled >' . ($area->getDescription()) . $tagTextAreaDescriptionFin;
-        $tagInputFile= $tagInputFileIni." disabled ".$tagInputFileFin;
-        
-        
-        if(intval($area->getStatus())==0){
-            $tagInputRadioButtomNo= $tagInputRadioButtomNoIni." checked disabled ".$tagInputRadioButtomNoFin;
-            $tagInputRadioButtomSi= $tagInputRadioButtomSiIni." disabled ".$tagInputRadioButtomSiFin;
+        $tagInputFile = $tagInputFileIni . " disabled " . $tagInputFileFin;
+
+
+        if (intval($area->getStatus()) == 0) {
+            $tagInputRadioButtomNo = $tagInputRadioButtomNoIni . " checked disabled " . $tagInputRadioButtomNoFin;
+            $tagInputRadioButtomSi = $tagInputRadioButtomSiIni . " disabled " . $tagInputRadioButtomSiFin;
         }
-        if(intval($area->getStatus())==1){
-            $tagInputRadioButtomSi= $tagInputRadioButtomSiIni." checked disabled ".$tagInputRadioButtomSiFin;
-            $tagInputRadioButtomNo= $tagInputRadioButtomNoIni." disabled ".$tagInputRadioButtomNoFin;
-            
+        if (intval($area->getStatus()) == 1) {
+            $tagInputRadioButtomSi = $tagInputRadioButtomSiIni . " checked disabled " . $tagInputRadioButtomSiFin;
+            $tagInputRadioButtomNo = $tagInputRadioButtomNoIni . " disabled " . $tagInputRadioButtomNoFin;
         }
-        $contenido_imagen = file_get_contents("../img/".$area->getImg());
+        $contenido_imagen = file_get_contents("../img/" . $area->getImg());
         $base64_imagen = base64_encode($contenido_imagen);
-        $tagImg=$tagImgIni.'<img style="width:150px; heigth:85px" src="data:image/jpeg;base64,'.$base64_imagen.'">'.$tagImgFin;
- 
-        $tagButtomGuardar= $tagButtomGuardarIni." disabled ".$tagButtomGuardarFin;
-        $tagButtomEditar ='<input type="button" class="btn btn-primary" id=btnEditar value="Editar">';
+        $tagImg = $tagImgIni . '<img style="width:150px; heigth:85px" src="data:image/jpeg;base64,' . $base64_imagen . '">' . $tagImgFin;
+
+        $tagButtomGuardar = $tagButtomGuardarIni . " disabled " . $tagButtomGuardarFin;
+        $tagButtomEditar = '<input type="button" class="btn btn-primary" id=btnEditar value="Editar">';
         $textAreaEdit = 'readonly : 1';
         break;
 
@@ -155,12 +151,8 @@ switch ($_GET["act"]) {
     <title>Mantenedor de &Acute;reas</title>
     <script type="text/javascript" src='../js/tinymce/tinymce.min.js'></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            padding: 40px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
         tinymce.init({
             selector: '#myTextarea',
@@ -184,55 +176,88 @@ switch ($_GET["act"]) {
             <?php echo $textAreaEdit; ?>
         });
     </script>
+
+
+    <style>
+        body {
+            padding: 40px;
+        }
+
+        .menu-link {
+            color: white;
+        }
+
+        .menu-link-dark {
+            color: black;
+        }
+
+        .navbar-nav {
+            margin-left: auto;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="container">
+<body class="p-3 m-0 border-0 bd-example">
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark " data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">PRO301</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active menu-link" aria-current="page" href="home.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="mantenedor-areas.php">Área</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="mantenedor-usuarios.php">Usuarios</a>
+                    </li>
 
-        <div class="row">
-            <div class="col-6">
-                <a class="btn btn-primary" href="home.php">Home</a>
-                <a class="btn btn-primary" href="mantenedor-areas.php">&Aacutereas</a>
-                <a class="btn btn-primary" href="mantenedor-usuarios.php">Usuarios</a>
-            </div>
-            <div class="col-3"></div>
-            <div class="col-3">
-                <a class="btn btn-ligth" href="">
-                    <?php echo $user_name; ?>
-                </a>
-                <a class="btn btn-primary" href="logout.php">Cerrar sesión</a>
-            </div>
-        </div>
-        <div class="row">
-            <h2 class="mt-4 mb-4">
-                <?php echo ($_GET['act'] == "new") ? "Nueva Area" : "Editar Area"; ?>
-            </h2>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <?php echo $modalError; ?><br>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle menu-link btn btn-primary" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <?php echo $user_name ?>
+                        </a>
+                        <ul class="dropdown-menu ">
+                            <li><a class="btn btn-danger dropdown-item menu-link-dark btn btn-danger" href="logout.php">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+
+
+                </ul>
             </div>
         </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-12"><br></div>
+    </nav>
+ 
+    <section>
+        <div class="container text-center">
+            <div class="row p-3"></div>
+            <div class="row p-3">
+                <div class="col-12">
+                    <h1><?php echo ($_GET['act'] == "new") ? "Nueva Area" : "Editar Area"; ?></h1>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-12"><br></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <?php echo $modalError; ?><br>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="container">
-                    <form action="" method="post" enctype="multipart/form-data">
-                    <div class="row">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                <form action="" method="post" enctype="multipart/form-data">
+                        <div class="row">
                             <div class="col-3"></div>
                             <div class="col-9">
                                 <input type="text" name="id" hidden>
-                        </div></div>
-                    <div class="row">
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-3"><label>Nombre Área</label></div>
                             <div class="col-9">
                                 <?php echo $tagInputNombreArea; ?></div>
@@ -261,27 +286,28 @@ switch ($_GET["act"]) {
                             <div class="col-4"><label>Publicado</label></div>
                             <div class="col-8">
                                 <?php
-                                    echo $tagInputRadioButtomSi;
-                                    echo $tagInputRadioButtomNo;
+                                echo $tagInputRadioButtomSi;
+                                echo "<br>";
+                                echo $tagInputRadioButtomNo;
                                 ?>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-4"></div>
                             <div class="col-4">
-                                <?php echo $tagButtomEditar;?>
+                                <?php echo $tagButtomEditar; ?>
                             </div>
                             <div class="col-4">
-                                <?php echo $tagButtomGuardar;?>
+                                <?php echo $tagButtomGuardar; ?>
                             </div>
                             <div class="col-4"></div>
                         </div>
                     </form>
+ 
                 </div>
             </div>
         </div>
-    </div>
-
+    </section>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/main.js"></script>
 </body>

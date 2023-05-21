@@ -3,10 +3,28 @@ declare(strict_types=1);
 Class User{
     private int $id;
     private string $name;
+    private string $fullName;
+    private string $pwd;
     private int $status;
 
     public function __construct() {
       }
+
+    public function getPwd(): string{
+        return $this->pwd;
+    }
+    public function setPwd(string $pwd): void{
+        $this->pwd = $pwd;
+
+    }
+
+
+    public function getFullName(): string{
+        return $this->fullName;
+    }
+    public function setFullName(string $fullName): void{
+        $this->fullName = $fullName;
+    }
       public function getId(): int {
         return $this->id;
     }
