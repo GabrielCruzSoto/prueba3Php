@@ -38,8 +38,13 @@ function getAreaById(int $code): Area
         $stmt->bind_param("i", $code);
         $stmt->execute();
         $result = $stmt->get_result();
-        $listArea = convertResultToListAreas($result);
-        $area= $listArea[0];
+        if (($result-> num_rows) >= 1) {
+            
+            $listArea = convertResultToListAreas($result);
+            $area = $listArea[0];
+        }else{
+            throw new Exception("Not Found area  cod by ".$code);
+        }
         cerrarBD2($conn, $result);
     } catch (Exception $e) {
         cerrarBD($conn);

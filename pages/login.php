@@ -14,6 +14,9 @@ if (isset($_POST["user"]) && isset($_POST["pwd"])) {
         $user = getUserByName($userName);
 
         getUserByIdAndPassword($user->getId(), $pwd);
+        if($user->getStatus()==0){
+            throw new UserException("Usuario no habilitado.");
+        }
         $_SESSION["user_name"] = $user->getName();
         $_SESSION["user_id"] = $user->getId();
         header("Location: home.php");

@@ -108,5 +108,36 @@
         }
         return  $listUsers;
     }
-
+    function deleteUserById(int $id){
+        $conn=null;
+        try{
+            $sql = "DELETE FROM usuarios WHERE id = ? ;";
+            $conn = conectarBD();
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            cerrarBD($conn);
+        }catch(Exception $e){
+            cerrarBD($conn);
+            
+        }
+    }
+    function getUserById(int $id): User{
+        $conn=null;
+        $listUsers=[];
+        try{
+            $sql = "SELECT id, usuario, nombre ,estado FROM usuarios WHERE id = ? ;";
+            $conn = conectarBD();
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $listUsers = convertResultToListUsers($result);
+            cerrarBD2($conn,$result);
+        }catch(Exception $e){
+            cerrarBD($conn);
+            throw $e;
+        }
+        return $listUsers[0];
+    }
 ?>

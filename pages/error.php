@@ -21,7 +21,7 @@
             <p>Por favor, comuníquese con el administrador del sistema para obtener más información.</p>
             <p>Disculpe las molestias.</p>
             <hr>
-            <p><a href="mailto:admin@ejemplo.com" class="btn btn-primary">Contactar al Administrador</a></p>
+            <p><a href="mailto:gabriel.cruzs@correoaiep.com" class="btn btn-primary">Contactar al Administrador</a></p>
         </div>
     </div>
 </div>

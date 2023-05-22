@@ -9,8 +9,8 @@ if (!isset($_SESSION["user_name"]) && !isset($_SESSION["user_id"])) {
     $user_id = $_SESSION["user_id"];
     $user_name = $_SESSION["user_name"];
 }
-$modalError="";
-$modalWarning="";
+$modalError = "";
+$modalWarning = "";
 if (!isset($_GET["act"])) {
     error_log("param GET act undedined");
     header("Location: error.php");
@@ -18,38 +18,47 @@ if (!isset($_GET["act"])) {
 }
 $id = 0;
 $__POST;
-if (isset($_POST["user"]) && isset($_POST["nombre"]) && isset($_POST["pwd"]) && isset($_POST["publico"])){
-    if(existUserByName($_POST["user"])){
-        $modalWarning= '<div class="alert alert-warning" role="alert"><strong>Warning : </strong> El usuario '.$_POST["user"].' ya existe en el sistema.</div>';
-    }else{
+if (isset($_POST["user"]) && isset($_POST["nombre"]) && isset($_POST["pwd"]) && isset($_POST["publico"])) {
+    if (existUserByName($_POST["user"])) {
+        $modalWarning = '<div class="alert alert-warning" role="alert"><strong>Warning : </strong> El usuario ' . $_POST["user"] . ' ya existe en el sistema.</div>';
+    } else {
 
         $userNew = new User();
         $userNew->setName($_POST["user"]);
         $userNew->setFullName($_POST["nombre"]);
         $userNew->setPwd($_POST["pwd"]);
         $userNew->setStatus($_POST["publico"]);
-        if(saveUser($userNew)){
+        if (saveUser($userNew)) {
             header("Location: mantenedor-usuarios.php");
             exit();
-        }else {
-            $modalError= '<div class="alert alert-danger" role="alert"><strong>Error : </strong> No se ha podido guardar el usuario.</div>';
+        } else {
+            $modalError = '<div class="alert alert-danger" role="alert"><strong>Error : </strong> No se ha podido guardar el usuario.</div>';
         }
-    }    
+    }
 }
+
 switch ($_GET["act"]) {
     case "new":
-        
+
         break;
     case "edit":
-        if (!isset($_GET["cod"])) {
-            error_log("param GET cod undedined");
+        if (!isset($_GET["id"])) {
+            error_log("param GET id undedined");
             header("Location: error.php");
             exit();
         }
-        $id=$_GET["id"];
+        $id =
+            $usuario = getUserById($_GET["id"]);
         break;
     case "delete";
-        break;
+        if (!isset($_GET["id"])) {
+            error_log("param GET id undedined");
+            header("Location: error.php");
+            exit();
+        }
+        deleteUserById($_GET["id"]);
+        header("Location: mantenedor-usuarios.php");
+        exit();
     default:
         error_log("The param act is not valid " . $action);
         header("Location: error.php");
@@ -120,7 +129,7 @@ switch ($_GET["act"]) {
         </div>
     </nav>
     <section>
-    <div class="container text-center">
+        <div class="container text-center">
             <div class="row p-3"></div>
             <div class="row p-3">
                 <div class="col-12">
@@ -146,7 +155,7 @@ switch ($_GET["act"]) {
                                     <label for="user">Usuario</label>
                                 </div>
                                 <div class="col-8">
-                                    <input class="form-control" type="text" name="user" id="user">
+                                    <input class="form-control" type="text" name="user" id="user" <?php echo ($_GET["act"] == "edit") ? " value='" . $usuario->getName() . "' disabled" : ""; ?>>
                                 </div>
                             </div>
                             <div class="row p-3"></div>
@@ -155,7 +164,7 @@ switch ($_GET["act"]) {
                                     <label for="nombre">Nombre</label>
                                 </div>
                                 <div class="col-8">
-                                    <input class="form-control" type="text" name="nombre" id="nombre">
+                                    <input class="form-control" type="text" name="nombre" id="nombre" <?php echo ($_GET["act"] == "edit") ? " value='" . $usuario->getFullName() . "' disabled" : ""; ?>>
                                 </div>
                             </div>
                             <div class="row p-3"></div>
@@ -164,7 +173,7 @@ switch ($_GET["act"]) {
                                     <label for="pwd">Contraseña</label>
                                 </div>
                                 <div class="col-8">
-                                    <input class="form-control" type="password" name="pwd" id="pwd">
+                                    <input class="form-control" type="password" name="pwd" id="pwd" <?php echo ($_GET["act"] == "edit") ? "' disabled" : ""; ?>>
                                 </div>
                             </div>
                             <div class="row p-3"></div>
@@ -173,7 +182,7 @@ switch ($_GET["act"]) {
                                     <label for="re-pwd">Repetir Contraseña</label>
                                 </div>
                                 <div class="col-8">
-                                    <input class="form-control" type="password" name="re-pwd" id="re-pwd">
+                                    <input class="form-control" type="password" name="re-pwd" id="re-pwd" <?php echo ($_GET["act"] == "edit") ? "' disabled" : ""; ?>>
                                 </div>
                             </div>
                             <div class="row p-3"></div>
@@ -182,17 +191,17 @@ switch ($_GET["act"]) {
                                     <label for="publico">Publico</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="radio" name="publico"  value="0">No</input>
+                                    <input type="radio" name="publico" value="0" <?php echo ($_GET["act"] == "edit") ? (($usuario->getStatus()==0)?" checked ":"")."' disabled" : ""; ?>>No</input>
                                     <br>
-                                    <input type="radio" name="publico"  value="1">Si</input>
+                                    <input type="radio" name="publico" value="1" <?php echo ($_GET["act"] == "edit") ? (($usuario->getStatus()==1)?" checked ":"")."' disabled" : ""; ?>>Si</input>
                                 </div>
                             </div>
                             <div class="row p-3"></div>
                             <div class="row">
                                 <div class="col-4"></div>
                                 <div class="col-4">
-                                    <input class="btn btn-primary"type="button" value="Edit">
-                                    <input class="btn btn-primary"type="submit" value="Nuevo">
+                                    <?php echo ($_GET["act"] == "edit") ? '<input class="btn btn-primary"type="button" value="Edit" >' : ""; ?>
+                                    <input class="btn btn-primary" type="submit" value="Nuevo" <?php echo ($_GET["act"] == "edit") ? "' disabled" : ""; ?>>
                                 </div>
                                 <div class="col-4"></div>
                             </div>

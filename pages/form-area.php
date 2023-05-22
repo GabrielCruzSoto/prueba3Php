@@ -104,11 +104,15 @@ switch ($_GET["act"]) {
         $cod = intval($_GET["cod"]);
         try {
             $area = getAreaById($cod);
+            if($area==null){
+                throw new Exception("getAreaById return area null");
+            };
         } catch (Exception $e) {
             error_log($e->getMessage());
             header("Location: error.php");
             exit();
         }
+       
         $tagInputNombreArea = $tagInputNombreAreaIni . 'value="' . ($area->getNameArea()) . '" disabled' . $tagInputNombreAreaFin;
         $tagTextAreaDescription = $tagTextAreaDescriptionIni . ' disabled >' . ($area->getDescription()) . $tagTextAreaDescriptionFin;
         $tagInputFile = $tagInputFileIni . " disabled " . $tagInputFileFin;
@@ -254,7 +258,7 @@ switch ($_GET["act"]) {
                         <div class="row">
                             <div class="col-3"></div>
                             <div class="col-9">
-                                <input type="text" name="id" hidden>
+                                <?php echo ($_GET["act"]=="edit")?'<input type="text" name="id" hidden value='.$_GET["cod"].'>':''; ?>
                             </div>
                         </div>
                         <div class="row">
