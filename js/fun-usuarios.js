@@ -3,7 +3,6 @@ document.getElementById('btn-edit').addEventListener('click', function() {
     document.getElementById("nombre").disabled = false;
     document.getElementById("pwd").disabled = false;
     //document.getElementById("re-pwd").disabled = false;
-    tinymce.
     document.getElementById("btn-save").disabled = false;
 
     document.getElementById("inputRadioPublicoSi").disabled = false;

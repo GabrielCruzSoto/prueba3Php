@@ -113,3 +113,28 @@ function deleteById(int $code): int
     }
     return $numrow;
 }
+function updateArea(Area $area): int
+{
+    $numrow = 0;
+    $conn = null;
+    try {
+        $sql = "UPDATE areas SET nom_area=?, descripcion=?, imagen=?, estado=? WHERE cod_area = ?;";
+        if($area->getImg()==null){
+            $sql = "UPDATE areas SET nom_area=?, descripcion=?, estado=? WHERE cod_area = ?;";
+        }
+        $conn = conectarBD();
+        $stmt = $conn->prepare($sql);
+        if($area->getImg()==null){
+            $stmt->bind_param("sssii", $code);
+        }else{
+            $stmt->bind_param("ssii", $code);
+        }
+        $stmt->execute();
+        $numrow = $stmt->affected_rows;
+    } catch (Exception $e) {
+        throw $e;
+    }finally{
+        cerrarBD($conn);
+    }
+    return $numrow;
+}

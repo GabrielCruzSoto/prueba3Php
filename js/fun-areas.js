@@ -19,16 +19,16 @@ if(document.getElementById('btn-edit')){
 
     document.getElementById('btn-edit').addEventListener('click', function() {
         document.getElementById("nombre_area").disabled = false;
-        tinymce.get(0).mode.set('design');
-        document.getElementById("custom-file").disabled = false;
         
-    
+        document.getElementById("customFile").disabled = false;
         document.getElementById("inputRadioPublicoSi").disabled = false;
         document.getElementById("inputRadioPublicoNo").disabled = false;
-    
+        document.getElementById("btn-save").disabled = false;
+        
     
         document.getElementById("btn-edit").disabled = true;
         document.getElementById("btn-edit").style.display = "none";
+        tinymce.get(0).mode.set('design');
     });
 }
 

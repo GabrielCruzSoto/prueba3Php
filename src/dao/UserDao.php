@@ -100,8 +100,9 @@
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $name);
             $stmt->execute();
-            
-            $isExist = ($stmt->num_rows()>=1);
+            $result = $stmt->get_result();
+            $isExist = (($result-> num_rows)>=1);
+            $result->free_result(); 
         } catch (Exception $e) {
             throw $e;
         } finally {
