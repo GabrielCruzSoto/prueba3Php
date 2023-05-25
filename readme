@@ -1,0 +1,56 @@
+# README - Levantar un Sistema con PHP 8 y MySQL
+
+Este archivo README proporciona instrucciones para configurar y levantar un sistema que utiliza PHP 8 y MySQL en tu entorno local. Sigue los pasos a continuación para asegurarte de tener todo correctamente instalado y configurado.
+
+## Requisitos previos
+
+Antes de comenzar, asegúrate de tener instalados los siguientes componentes en tu sistema:
+
+- Servidor web (por ejemplo, Apache, Nginx).
+- PHP 8 (o una versión superior) con los módulos y extensiones necesarios (puedes instalarlos mediante tu gestor de paquetes o descargar PHP desde el sitio oficial).
+- MySQL (versión 5.6 o superior) o una alternativa compatible, como MariaDB.
+
+## Configuración del entorno
+
+Sigue los pasos a continuación para configurar tu entorno de desarrollo:
+
+1. Clona este repositorio en tu directorio de proyectos local o descarga y extrae el archivo ZIP.
+
+2. Configuración de PHP:
+   - Asegúrate de que PHP esté instalado correctamente ejecutando `php -v` en la línea de comandos. Deberías ver la versión de PHP instalada.
+   - Verifica que los módulos y extensiones necesarios estén habilitados en tu archivo de configuración php.ini. Algunos módulos y extensiones comunes incluyen:
+     - `mysqli` o `pdo_mysql` para la conexión con MySQL.
+     - `gd` para el procesamiento de imágenes (si es necesario).
+   - Reinicia tu servidor web para aplicar los cambios.
+
+3. Configuración de MySQL:
+   - Asegúrate de tener un servidor MySQL instalado y en funcionamiento.
+   - Crea una base de datos para tu aplicación.
+   - Verifica que tienes las credenciales correctas (nombre de usuario y contraseña) para acceder a tu base de datos MySQL.
+
+4. Configuración de permisos de directorio:
+   - Asegúrate de que el directorio donde se almacenarán las imágenes (por ejemplo, `ruta/img`) tenga los permisos de escritura y lectura adecuados para el servidor web. Ejecuta el siguiente comando en la línea de comandos:
+     ```
+     chmod -R 755 ruta/img
+     ```
+   - Si estás en un entorno de desarrollo local, también puedes cambiar el propietario del directorio al usuario del servidor web:
+     ```
+     chown -R www-data:www-data ruta/img
+     ```
+
+5. Configuración de la aplicación:
+   - Abre el archivo de configuración de la aplicación (generalmente denominado `config.php` o similar).
+   - Actualiza la configuración de conexión a la base de datos con tus propias credenciales (nombre de host, nombre de usuario, contraseña y nombre de la base de datos).
+   - Si es necesario, ajusta otras configuraciones de la aplicación según tus necesidades.
+
+## Ejecutar la aplicación
+
+Una vez que hayas configurado tu entorno y la aplicación, sigue estos pasos para ejecutarla:
+
+1. Inicia tu servidor web y asegúrate de que esté en funcionamiento.
+
+2. Abre un navegador web y accede a la URL correspondiente a tu aplicación (por ejemplo, `http://localhost/tu_app`).
+
+3. Si la aplicación permite subir imágenes y almacenarlas en el directorio `ruta/img`, asegúrate de que puedas realizar operaciones de escritura y lectura en ese directorio. Puedes probar subiendo una imagen de prueba y verificando que se almacene correctamente.
+
+¡Ahora deberías tener tu sistema en funcionamiento con PHP 8 y MySQL! Si encuentras algún problema, verifica la configuración y los permisos, y asegúrate de seguir las instrucciones correctamente.

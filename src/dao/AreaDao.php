@@ -18,11 +18,11 @@ function getAllAreas(): array
         $stmt->execute();
         $result = $stmt->get_result();
         $listAreas = convertResultToListAreas($result);
-
-        cerrarBD2($conn, $result);
+        $result->free_result(); 
     } catch (Exception $e) {
-        cerrarBD($conn);
         throw $e;
+    }finally{
+        cerrarBD($conn);
     }
     return $listAreas;
 }
@@ -38,17 +38,19 @@ function getAreaById(int $code): Area
         $stmt->bind_param("i", $code);
         $stmt->execute();
         $result = $stmt->get_result();
+        
         if (($result-> num_rows) >= 1) {
             
             $listArea = convertResultToListAreas($result);
             $area = $listArea[0];
+            $result->free_result(); 
         }else{
             throw new Exception("Not Found area  cod by ".$code);
-        }
-        cerrarBD2($conn, $result);
+        } 
     } catch (Exception $e) {
-        cerrarBD($conn);
         throw $e;
+    }finally{
+        cerrarBD($conn);
     }
     return $area;
 }
@@ -63,10 +65,11 @@ function saveArea(Area $area)
         $stmt->bind_param("sssi", $area->getNameArea(), $area->getDescription(), $area->getImg(), $area->getStatus());
         $stmt->execute();
         $numrow = $stmt->affected_rows;
-        cerrarBD($conn);
+
     } catch (Exception $e) {
-        cerrarBD($conn);
         throw $e;
+    }finally{
+        cerrarBD($conn);
     }
     return $numrow;
 }
@@ -82,14 +85,12 @@ function getByNombreAreaAndDescripcionAndImagenAndEstado(Area $area): Area
         $stmt->execute();
         $result = $stmt->get_result();
         $listArea = convertResultToListAreas($result);
+        $result->free_result(); 
         $areaout = $listArea[0];
-        cerrarBD2($conn, $result);
     } catch (Exception $e) {
-        if (isset($conn)) {
-            cerrarBD($conn);
-        }
-
         throw $e;
+    }finally{
+        cerrarBD($conn);
     }
     return $areaout;
 }
@@ -105,10 +106,10 @@ function deleteById(int $code): int
         $stmt->bind_param("i", $code);
         $stmt->execute();
         $numrow = $stmt->affected_rows;
-        cerrarBD($conn);
     } catch (Exception $e) {
-        cerrarBD($conn);
         throw $e;
+    }finally{
+        cerrarBD($conn);
     }
     return $numrow;
 }

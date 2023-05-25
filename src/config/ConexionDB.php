@@ -25,8 +25,5 @@ declare(strict_types=1);
     function cerrarBD(mysqli $conexion) : void {
         $conexion->close();
     }
-function cerrarBD2(mysqli $conexion,mysqli_result $result) : void {
-    $result->free_result();
-    $conexion->close();
-}
+
 ?>

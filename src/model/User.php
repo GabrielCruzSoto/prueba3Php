@@ -4,7 +4,7 @@ Class User{
     private int $id;
     private string $name;
     private string $fullName;
-    private string $pwd;
+    private string $pwd = "";
     private int $status;
 
     public function __construct() {

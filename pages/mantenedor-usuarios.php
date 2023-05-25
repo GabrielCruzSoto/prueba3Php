@@ -122,7 +122,7 @@ $listUsuarios = getAllUsers();
                 echo '<td>'.$usuario->getFullName().'</td>';
                 echo '<td>'.($usuario->getStatus() == 0 ? "N" : "S").'</td>';
                 echo '<td><a class="btn btn-success mx-3" href="form-usuarios.php?act=edit&id=' . $usuario->getId() . '">Editar</a>'.
-                '<a class="btn btn-danger mx-3" href="form-usuarios.php?act=del&id=' . $usuario->getId() . '">Editar</a>'.
+                '<a class="btn btn-danger mx-3" href="form-usuarios.php?act=del&id=' . $usuario->getId() . '">Eliminar</a>'.
                 '</td>';
                 echo "</tr>";
               }
