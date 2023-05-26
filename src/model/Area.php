@@ -6,7 +6,7 @@ class Area
     private int $code;
     private string $nameArea;
     private string $descripction;
-    private string $img;
+    private string $img = "";
     private int $status;
     public function __construct()
     {

@@ -15,68 +15,77 @@ if (!isset($_GET["act"])) {
     header("Location: error.php");
     exit();
 }
-function generateNameFile(string $name){
+function generateNameFile(string $name)
+{
     $extensionFile = pathinfo($name, PATHINFO_EXTENSION);
 
     $serialTimestap = strval((new DateTime())->getTimestamp());
-    return $serialTimestap.".".$extensionFile;
+    return $serialTimestap . "." . $extensionFile;
 }
-
-$modalError = "";
-if (isset($_POST["cod"]) && isset($_POST["nombre_area"]) && isset($_POST["descripcion"]) && isset($_POST["estado"]) && isset($_FILES["fileImg"])) {
-    $areaOld= getAreaById($_POST["cod"]);
-    $areaUpdate=$areaOld;
-
-    if($areaOld->getNameArea() !=$_POST["nombre_area"]){
-        $areaUpdate->setNameArea($_POST["nombre_area"]);
-    }
-    if($_FILES["fileImg"]["name"]!=""){
-        $nombreArchivoFinal = generateNameFile($nombre_archivo);
-        if(move_uploaded_file($_FILES['fileImg']['tmp_name'], "/var/www/html/prueba3/img/" . $nombre_archivo)){
-            $areaUpdate->setImg($nombreArchivoFinal);
-            
-        }else{
-            $modalError = '<div class="alert alert-danger" role="alert"><strong>Error</strong> al guardar</div>';
+if (count($_POST) != 0) {
+    if ($_POST["cod"] == "0" && isset($_POST["nombre_area"]) && isset($_POST["descripcion"]) && isset($_POST["estado"]) && isset($_FILES["fileImg"])) {
+        try {
+            $nombre_archivo = $_FILES["fileImg"]["name"];
+            $area = new Area();
+            $area->setNameArea($_POST["nombre_area"]);
+            $area->setDescription($_POST["descripcion"]);
+            $nombreArchivoFinal = generateNameFile($nombre_archivo);
+            $area->setImg($nombreArchivoFinal);
+            $area->setStatus($_POST["estado"]);
+            $rutaTemporal = $_FILES['fileImg']['tmp_name'];
+            $rowAfect = saveArea($area);
+            if ($rowAfect >= 1) {
+                $area = getByNombreAreaAndDescripcionAndImagenAndEstado($area);
+                $nombreArchivoFinal = generateNameFile($nombre_archivo);
+                $isSaveFile = !move_uploaded_file($rutaTemporal, "/var/www/html/prueba3/img/" . $nombreArchivoFinal);
+                if ($isSaveFile) {
+                    deleteById($area->getCode());
+                    $modalError = '<div class="alert alert-danger" role="alert"><strong>Error</strong> al guardar</div>';
+                } else {
+                    #header("Location: mantenedor-areas.php");
+                    header("Location: mantenedor-areas.php");
+                    exit();
+                }
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            header("Location: error.php");
+            exit();
         }
     }
-    if($areaOld->getDescription()!=$_POST["descripcion"]){
-        $areaUpdate->setDescription($_POST["descripcion"]);
-    }
-    if($areaOld->getStatus()!=$_POST["estado"]){
-        $areaUpdate->setStatus(intval($_POST["estado"]));
-    }
-    if (updateArea($areaUpdate) >= 1) {
-            #header("Location: mantenedor-areas.php");
-            header("Location: form-area.php?act=edit&cod=" . strval($area->getCode()));
-            exit();
-    }else{
 
-    }
-}else{
+    if ($_POST["cod"] != "0" && isset($_POST["nombre_area"]) && isset($_POST["descripcion"]) && isset($_POST["estado"]) && isset($_FILES["fileImg"])) {
+        try {
+            $areaOld = getAreaById($_POST["cod"]);
+            $areaUpdate = $areaOld;
 
+            if ($areaOld->getNameArea() != $_POST["nombre_area"]) {
+                $areaUpdate->setNameArea($_POST["nombre_area"]);
+            }
+            if ($_FILES["fileImg"]["name"] != "") {
 
-    if ( isset($_POST["nombre_area"]) && isset($_POST["descripcion"]) && isset($_POST["estado"]) && isset($_FILES["fileImg"])) {
-        $nombre_archivo = $_FILES["fileImg"]["name"];
-        $area = new Area();
-        $area->setNameArea($_POST["nombre_area"]);
-        $area->setDescription($_POST["descripcion"]);
-        $nombreArchivoFinal = generateNameFile($nombre_archivo);
-        $area->setImg($nombreArchivoFinal);
-        $area->setStatus($_POST["estado"]);
-        $rutaTemporal = $_FILES['fileImg']['tmp_name'];
-        $rowAfect = saveArea($area);
-        if ($rowAfect >= 1) {
-            $area = getByNombreAreaAndDescripcionAndImagenAndEstado($area);
-            $nombreArchivoFinal = generateNameFile($nombre_archivo);
-            $isSaveFile = !move_uploaded_file($rutaTemporal, "/var/www/html/prueba3/img/" .$nombreArchivoFinal);
-            if ($isSaveFile) {
-                deleteById($area->getCode());
-                $modalError = '<div class="alert alert-danger" role="alert"><strong>Error</strong> al guardar</div>';
-            } else {
-                #header("Location: mantenedor-areas.php");
-                header("Location: form-area.php?act=edit&cod=" . strval($area->getCode()));
+                $nombreArchivoFinal = generateNameFile($_FILES["fileImg"]["name"]);
+                if (move_uploaded_file($_FILES['fileImg']['tmp_name'], "/var/www/html/prueba3/img/" . $nombreArchivoFinal)) {
+                    $areaUpdate->setImg($nombreArchivoFinal);
+                } else {
+                    header("Location: error.php");
+                    exit();
+                }
+            }
+            if ($areaOld->getDescription() != $_POST["descripcion"]) {
+                $areaUpdate->setDescription($_POST["descripcion"]);
+            }
+            if ($areaOld->getStatus() != $_POST["estado"]) {
+                $areaUpdate->setStatus(intval($_POST["estado"]));
+            }
+            if (updateArea($areaUpdate) >= 1) {
+                header("Location: mantenedor-areas.php");
                 exit();
             }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            header("Location: error.php");
+            exit();
         }
     }
 }
@@ -134,10 +143,10 @@ switch ($_GET["act"]) {
         header("Location: mantenedor-areas.php");
         exit();
     case "new":
-        $tagInputNombreArea = $tagInputNombreAreaIni ." required " . $tagInputNombreAreaFin;
+        $tagInputNombreArea = $tagInputNombreAreaIni . " required " . $tagInputNombreAreaFin;
         $tagTextAreaDescription = $tagTextAreaDescriptionIni . ' >' . $tagTextAreaDescriptionFin;
-        $tagInputFile = $tagInputFileIni ." required " . $tagInputFileFin;
-        $tagInputRadioButtomSi = $tagInputRadioButtomSiIni ." required " . $tagInputRadioButtomSiFin;
+        $tagInputFile = $tagInputFileIni . " required " . $tagInputFileFin;
+        $tagInputRadioButtomSi = $tagInputRadioButtomSiIni . " required " . $tagInputRadioButtomSiFin;
         $tagInputRadioButtomNo = $tagInputRadioButtomNoIni . $tagInputRadioButtomNoFin;
         $tagButtomGuardar = $tagButtomGuardarIni . $tagButtomGuardarFin;
         $tagImg = $tagImgIni . $tagImgFin;
@@ -226,7 +235,7 @@ switch ($_GET["act"]) {
                 }
             },
             menubar: 'favs file edit view insert format tools table help'
-            <?php echo $_GET["act"]=="edit"?",readonly: true":"";?>
+            <?php echo $_GET["act"] == "edit" ? ",readonly: true" : ""; ?>
         });
     </script>
 
@@ -308,7 +317,7 @@ switch ($_GET["act"]) {
                         <div class="row">
                             <div class="col-3"></div>
                             <div class="col-9">
-                                <?php echo ($_GET["act"] == "edit") ? '<input type="text" name="cod" hidden value=' . $_GET["cod"] . '>' : ''; ?>
+                                <?php echo ($_GET["act"] == "edit") ? '<input type="text" name="cod" hidden value=' . $_GET["cod"] . '>' : '<input type="text" name="cod" hidden value=0>'; ?>
                             </div>
                         </div>
                         <div class="row">

@@ -118,16 +118,18 @@ function updateArea(Area $area): int
     $numrow = 0;
     $conn = null;
     try {
-        $sql = "UPDATE areas SET nom_area=?, descripcion=?, imagen=?, estado=? WHERE cod_area = ?;";
-        if($area->getImg()==null){
+        $sql = "";
+        if($area->getImg()==""){
             $sql = "UPDATE areas SET nom_area=?, descripcion=?, estado=? WHERE cod_area = ?;";
+        }else{
+            $sql = "UPDATE areas SET nom_area=?, descripcion=?, imagen=?, estado=? WHERE cod_area = ?;";
         }
         $conn = conectarBD();
         $stmt = $conn->prepare($sql);
-        if($area->getImg()==null){
-            $stmt->bind_param("sssii", $code);
+        if($area->getImg()==""){
+            $stmt->bind_param("ssii", $area->getNameArea(),$area->getDescription(),$area->getStatus(),$area->getCode());
         }else{
-            $stmt->bind_param("ssii", $code);
+            $stmt->bind_param("sssii", $area->getNameArea(),$area->getDescription(),$area->getImg(),$area->getStatus(),$area->getCode());
         }
         $stmt->execute();
         $numrow = $stmt->affected_rows;
